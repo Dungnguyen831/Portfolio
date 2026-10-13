@@ -35,7 +35,7 @@ export default function Contact() {
         <SectionHeader
           eyebrow="Liên hệ"
           title="Cùng xây sản phẩm tiếp theo"
-          desc="Đang tìm Flutter Developer có tư duy thiết kế? Tôi phản hồi trong vòng 24 giờ."
+          desc="Đang tìm Software Developer (Flutter / Java Spring Boot)? Tôi phản hồi trong vòng 24 giờ."
           right={<StatusPill />}
         />
 

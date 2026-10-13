@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowDown, ArrowUpRight, FileDown, PenTool } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, Code2, FileText, Server } from 'lucide-react'
 import { profile, trafficHub } from '../data'
 import { FlutterMark, Spotlight, StatusPill } from './ui'
 
@@ -27,35 +27,38 @@ export default function Hero() {
 
         <motion.h1
           {...item(2)}
-          className="mt-4 max-w-4xl text-[2.6rem] font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-[4.4rem]"
+          className="mt-4 max-w-4xl text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-[4.2rem]"
         >
-          <span className="text-shine">Thiết kế từng pixel.</span>
+          <span className="text-shine">Thiết kế chuẩn mực.</span>
           <br />
-          <span className="text-shine">Code Flutter chạy </span>
-          <span className="text-sky-soft">60&nbsp;FPS</span>
+          <span className="text-shine">Code Mobile </span>
+          <span className="text-sky-soft">Flutter 60&nbsp;FPS</span>
+          <br className="hidden sm:inline" />
+          <span className="text-shine">&amp; Backend </span>
+          <span className="text-signal">Java Spring Boot</span>
           <span className="text-shine">.</span>
         </motion.h1>
 
-        <motion.p {...item(3)} className="mt-6 max-w-xl text-[17px] leading-relaxed text-muted">
-          Tôi đứng giữa Figma và Flutter — biến luồng trải nghiệm thành sản phẩm di động mượt mà,
-          dễ bảo trì. Dự án mới nhất: <span className="text-fg">TrafficHub</span>, ứng dụng cảnh báo giao
-          thông cộng đồng — có thể dùng thử ngay bên dưới.
+        <motion.p {...item(3)} className="mt-6 max-w-2xl text-[16.5px] leading-relaxed text-muted">
+          Tôi xây dựng các trải nghiệm di động mượt mà với Flutter và kiến trúc hệ thống backend tin cậy với Java Spring Boot.
+          Dự án chủ lực bên dưới: <span className="text-fg font-medium">TrafficHub</span> — nền tảng cảnh báo giao thông cộng đồng
+          thời gian thực, bạn có thể tương tác trực tiếp ngay trên trang.
         </motion.p>
 
         <motion.div {...item(4)} className="mt-9 flex flex-wrap items-center gap-3">
           <a id="hero-cta-case" href="#case-study" className="btn btn-primary">
             Dùng thử TrafficHub <ArrowDown size={15} />
           </a>
-          <a id="hero-cta-cv" href={profile.cv} download className="btn btn-ghost">
-            <FileDown size={15} className="text-muted" /> Tải CV
+          <a id="hero-cta-about" href="#about-projects" className="btn btn-ghost">
+            <Code2 size={15} className="text-muted" /> Về tôi &amp; Dự án
           </a>
-          <span className="ml-1 hidden items-center gap-1.5 text-xs text-dim sm:inline-flex">
-            hoặc nhấn <kbd className="kbd">↓</kbd> để cuộn
-          </span>
+          <a id="hero-cta-cv" href="#resume" className="btn btn-ghost">
+            <FileText size={15} className="text-muted" /> Xem &amp; Tải CV
+          </a>
         </motion.div>
 
         {/* Bento strip */}
-        <motion.div {...item(6)} className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div {...item(5)} className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Spotlight as="a" href="#case-study" id="hero-bento-featured" className="group p-5 sm:col-span-2">
             <div className="flex items-center justify-between">
               <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-signal">
@@ -68,16 +71,22 @@ export default function Hero() {
             <p className="mt-4 truncate font-mono text-[11px] text-dim">{trafficHub.demo.replace('https://', '')}</p>
           </Spotlight>
 
-          <Spotlight className="p-5">
-            <FlutterMark size={18} />
-            <p className="mt-6 text-sm font-medium text-white">Flutter · Dart · GetX</p>
-            <p className="mt-1 text-sm text-muted">Một codebase cho Android, iOS & Web.</p>
+          <Spotlight as="a" href="#about-projects" className="group p-5">
+            <div className="flex items-center justify-between">
+              <FlutterMark size={18} />
+              <ArrowUpRight size={14} className="text-dim transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
+            <p className="mt-6 text-sm font-medium text-white">Mobile: Flutter &amp; Dart</p>
+            <p className="mt-1 text-sm text-muted">BLoC / GetX, Clean Architecture, 60 FPS.</p>
           </Spotlight>
 
-          <Spotlight className="p-5">
-            <PenTool size={18} className="text-signal" />
-            <p className="mt-6 text-sm font-medium text-white">Figma → Flutter</p>
-            <p className="mt-1 text-sm text-muted">Tự thiết kế, tự hiện thực, không “lệch pixel”.</p>
+          <Spotlight as="a" href="#about-projects" className="group p-5">
+            <div className="flex items-center justify-between">
+              <Server size={18} className="text-signal" />
+              <ArrowUpRight size={14} className="text-dim transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
+            <p className="mt-6 text-sm font-medium text-white">Backend: Java Spring Boot</p>
+            <p className="mt-1 text-sm text-muted">REST API, JPA/Hibernate, bảo mật JWT.</p>
           </Spotlight>
         </motion.div>
       </div>
