@@ -5,7 +5,7 @@ export const profile = {
   email: 'nguyenanhdung831@gmail.com',
   phone: '+84 904 754 029',
   github: 'https://github.com/Dungnguyen831',
-  cv: '/CV_frontend.pdf', // file CV đặt trong thư mục public/
+  cv: `${import.meta.env.BASE_URL}CV_frontend.pdf`, // file CV đặt trong thư mục public/
 }
 
 export const trafficHub = {
