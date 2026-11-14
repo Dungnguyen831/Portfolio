@@ -316,12 +316,55 @@ export const featuredRepositories = [
 ]
 
 export const navLinks = [
-  { label: 'Tổng quan', href: '#home' },
-  { label: 'TrafficHub Demo', href: '#case-study' },
-  { label: 'Kiến trúc & Hệ thống', href: '#engineering' },
-  { label: 'Về tôi & GitHub', href: '#about-projects' },
-  { label: 'Hồ sơ & CV', href: '#resume' },
+  { label: 'Dự án', href: '#work' },
+  { label: 'Hồ sơ & GitHub', href: '#profile' },
+  { label: 'Kỹ năng', href: '#skills' },
   { label: 'Liên hệ', href: '#contact' },
+]
+
+/* Library system: 14 tables grouped by domain (names unchanged from the real schema) */
+export const libraryTableGroups = [
+  {
+    name: 'Tài nguyên sách',
+    desc: 'Đầu sách tách biệt với bản sao vật lý và vị trí kệ.',
+    tables: ['books', 'book_copies', 'authors', 'categories', 'publishers', 'shelves'],
+  },
+  {
+    name: 'Lưu hành',
+    desc: 'Phiếu mượn/trả, đặt trước và tiền phạt quá hạn.',
+    tables: ['loans', 'loan_details', 'reservations', 'fines'],
+  },
+  {
+    name: 'Tương tác độc giả',
+    desc: 'Đánh giá sách và danh sách yêu thích.',
+    tables: ['reviews', 'wishlists'],
+  },
+  {
+    name: 'Tài khoản & phân quyền',
+    desc: 'Người dùng và 3 vai trò: Admin, Thủ thư, Độc giả.',
+    tables: ['users', 'roles'],
+  },
+]
+
+/* Library system: 15 REST controllers grouped by responsibility */
+export const libraryControllerGroups = [
+  { name: 'Xác thực & người dùng', items: ['AuthController', 'UserController'] },
+  {
+    name: 'Danh mục sách',
+    items: [
+      'BookController',
+      'BookCopyController',
+      'AuthorController',
+      'CategoryController',
+      'PublisherController',
+      'ShelfController',
+    ],
+  },
+  { name: 'Lưu hành', items: ['LoanController', 'ReservationController', 'FineController'] },
+  {
+    name: 'Cộng đồng & vận hành',
+    items: ['ReviewController', 'WishlistController', 'DashboardController', 'UploadController'],
+  },
 ]
 
 export const skills = [
