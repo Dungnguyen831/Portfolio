@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const EASE = [0.16, 1, 0.3, 1]
 
-export const Reveal = ({ children, delay = 0, y = 18, className = '', as = 'div' }) => {
+export const Reveal = ({ children, delay = 0, y = 16, className = '', as = 'div' }) => {
   const M = motion[as]
   return (
     <M
       className={className}
-      initial={{ opacity: 0, y, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, delay, ease: EASE }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.65, delay, ease: EASE }}
     >
       {children}
     </M>
@@ -50,6 +50,73 @@ export const Spotlight = ({ as: Tag = 'div', className = '', children, ...rest }
   )
 }
 
+/**
+ * Native <dialog> modal wrapper following modern-web-guidance:
+ * - Opens with dialog.showModal()
+ * - Uses declarative closedby="any" for Esc + light-dismiss
+ * - Implements coordinate-based click-outside fallback when closedBy is unsupported
+ * - Does not set role="dialog", aria-modal, or mutate body/html overflow
+ */
+export const ModalDialog = ({ open, onClose, titleId, className = '', children }) => {
+  const dialogRef = useRef(null)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    if (open && !dialog.open) {
+      dialog.showModal()
+    } else if (!open && dialog.open) {
+      dialog.close()
+    }
+  }, [open])
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    const handleClose = () => {
+      dialog.returnValue = ''
+      onClose?.()
+    }
+    dialog.addEventListener('close', handleClose)
+
+    let handleBackdropClick
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      handleBackdropClick = (event) => {
+        if (event.target !== dialog) return
+        const rect = dialog.getBoundingClientRect()
+        const isDialogContent =
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        if (isDialogContent) return
+        dialog.close()
+      }
+      dialog.addEventListener('click', handleBackdropClick)
+    }
+
+    return () => {
+      dialog.removeEventListener('close', handleClose)
+      if (handleBackdropClick) {
+        dialog.removeEventListener('click', handleBackdropClick)
+      }
+    }
+  }, [onClose])
+
+  return (
+    <dialog
+      ref={dialogRef}
+      {...{ closedby: 'any' }}
+      aria-labelledby={titleId}
+      className={`m-auto border-0 bg-transparent p-0 text-fg outline-none open:flex ${className}`}
+    >
+      {children}
+    </dialog>
+  )
+}
+
 export const useMediaQuery = (query) => {
   const get = () => (typeof window !== 'undefined' ? window.matchMedia(query).matches : false)
   const [match, setMatch] = useState(get)
@@ -75,7 +142,7 @@ export const StatusPill = ({ className = '' }) => (
 
 export const GithubIcon = ({ size = 18, className = '' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
-    <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.250 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.18 1.83 1.18 3.09 0 4.42-2.690 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
+    <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
   </svg>
 )
 

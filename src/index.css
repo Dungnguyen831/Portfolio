@@ -193,6 +193,17 @@ body {
 }
 .ghost-ring { animation: ghost-tap 1.2s var(--ease-out-expo) infinite; }
 
+/* ---------- Native Modal Dialog (modern-web-guidance) ---------- */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgb(4 7 13 / 0.8);
+  backdrop-filter: blur(8px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
