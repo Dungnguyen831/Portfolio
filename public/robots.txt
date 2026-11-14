@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dungnguyen831.github.io/Portfolio/sitemap.xml
