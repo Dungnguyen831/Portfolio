@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpRight,
+  Award,
   Briefcase,
   CheckCircle2,
   Download,
@@ -12,8 +12,27 @@ import {
   Maximize2,
   X,
 } from 'lucide-react'
-import { profile, skills } from '../data'
-import { Eyebrow, Reveal, SectionHeader, Spotlight } from './ui'
+import { librarySystem, profile, skills, trafficHub } from '../data'
+import { ModalDialog, Reveal, SectionHeader, Spotlight } from './ui'
+
+const competencies = [
+  {
+    title: 'Phát triển Mobile đa nền tảng (Flutter & Dart)',
+    desc: `Xây dựng giao diện chuẩn Figma với flutter_screenutil, quản lý trạng thái bằng GetX (${trafficHub.dartFiles} file Dart ở TrafficHub) và Riverpod (MusicAPP), tối ưu infinite-scroll & cached_network_image.`,
+  },
+  {
+    title: 'Phát triển Backend & Thiết kế CSDL (Java Spring Boot & MySQL)',
+    desc: `Xây dựng ${librarySystem.controllersCount} REST Controllers trên Spring Boot 4 (Java 25), thiết kế ${librarySystem.tablesCount} bảng MySQL chuẩn hóa, bảo mật JWT (jjwt) 3 tầng phân quyền và tài liệu hóa OpenAPI/Swagger.`,
+  },
+  {
+    title: 'Hệ thống Thời gian thực, Bản đồ & AI',
+    desc: 'Tích hợp bản đồ OpenStreetMap (flutter_map), luồng phát tín hiệu cứu hộ SOS qua STOMP WebSocket & Firebase FCM, cùng trợ lý ảo Gemini API kết hợp nhận diện giọng nói.',
+  },
+  {
+    title: 'Kiểm thử Tự động & Quy trình Kỹ thuật (Cypress E2E & Git)',
+    desc: `Thiết kế ${librarySystem.e2eSuitesCount} bộ kịch bản kiểm thử tự động Cypress áp dụng Phân tích giá trị biên (BVA) & Phân vùng tương đương (EP); quản lý mã nguồn qua Git và theo dõi tiến độ Sprint bằng ClickUp.`,
+  },
+]
 
 export default function ResumeSection() {
   const [showModal, setShowModal] = useState(false)
@@ -24,60 +43,75 @@ export default function ResumeSection() {
 
       <div className="mx-auto max-w-6xl">
         <SectionHeader
-          eyebrow="Curriculum Vitae"
-          title="Hồ sơ năng lực & CV"
-          desc="Tóm lược kinh nghiệm, định hướng kiến trúc và bộ kỹ năng sẵn sàng cho các dự án thực tế."
+          eyebrow="Curriculum Vitae & Skills"
+          title="Hồ sơ năng lực, Học vấn & Bộ kỹ năng"
+          desc="Thông tin trích xuất chính xác từ CV chính thức: học vấn tại ĐH Công nghệ GTVT (UTT), giải thưởng năm 2026 và bộ công cụ kỹ thuật hằng ngày."
         />
 
         <div className="grid gap-6 lg:grid-cols-12">
-          {/* Cột trái: Card CV Action & Preview (span 5) */}
+          {/* Cột trái: Card CV Action, Học vấn & Giải thưởng (span 5) */}
           <Reveal className="lg:col-span-5">
             <Spotlight className="flex h-full flex-col justify-between p-6 sm:p-8">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 rounded-lg border border-sky-soft/30 bg-sky/[0.08] px-3 py-1 font-mono text-xs font-semibold text-sky-soft">
-                    <FileText size={14} /> Resume / CV
+                    <FileText size={14} /> Official Resume / CV
                   </span>
-                  <span className="font-mono text-xs text-dim">Updated 2026</span>
+                  <span className="font-mono text-xs text-dim">Cập nhật 2026</span>
                 </div>
 
                 <h3 className="mt-5 text-2xl font-bold tracking-tight text-white">
                   CV — {profile.name}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">
-                  Bản tóm tắt chi tiết về học vấn, kỹ năng lập trình (Flutter & Java Spring Boot),
-                  các dự án đã hoàn thành và chứng chỉ chuyên môn.
+                  Bản CV tiếng Anh chuẩn ATS trình bày chi tiết mục tiêu nghề nghiệp, dự án kỹ thuật,
+                  học vấn và giải thưởng tại Trường Đại học Công nghệ Giao thông Vận tải.
                 </p>
 
-                {/* Document preview mock */}
-                <div className="mt-6 rounded-2xl border border-white/[0.08] bg-[#0c1018] p-5 shadow-inner">
-                  <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 text-xs">
-                    <div className="flex items-center gap-2 text-muted">
-                      <FileCheck size={16} className="text-go" />
-                      <span className="font-mono text-fg">CV_Nguyen_Dung.pdf</span>
+                {/* Education & Award Summary inside CV card */}
+                <div className="mt-5 space-y-3 rounded-2xl border border-white/[0.08] bg-[#0c1018] p-4">
+                  <div className="flex items-start gap-3">
+                    <GraduationCap size={18} className="mt-0.5 shrink-0 text-sky-soft" />
+                    <div>
+                      <p className="text-xs font-semibold text-white">{profile.education.school}</p>
+                      <p className="mt-0.5 text-xs text-muted">{profile.education.degree}</p>
+                      <p className="mt-1 font-mono text-[11px] text-sky-soft">
+                        GPA hiện tại: {profile.education.gpa} · {profile.education.period}
+                      </p>
                     </div>
-                    <span className="font-mono text-[11px] text-dim">PDF · 112 KB</span>
                   </div>
 
-                  <div className="mt-4 space-y-2.5">
-                    <div className="h-2.5 w-3/4 rounded bg-white/[0.08]" />
-                    <div className="h-2 w-full rounded bg-white/[0.04]" />
-                    <div className="h-2 w-5/6 rounded bg-white/[0.04]" />
-                    <div className="h-2 w-2/3 rounded bg-white/[0.04]" />
+                  <div className="border-t border-white/[0.06] pt-3">
+                    <div className="flex items-start gap-3">
+                      <Award size={18} className="mt-0.5 shrink-0 text-amber-300" />
+                      <div>
+                        <p className="text-xs font-semibold text-amber-200">
+                          {profile.award.title}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted">{profile.award.project}</p>
+                      </div>
+                    </div>
                   </div>
+                </div>
 
-                  <div className="mt-5 flex items-center justify-between pt-3 border-t border-white/[0.06] text-xs text-muted">
-                    <span>Trạng thái: Đầy đủ thông tin</span>
-                    <span className="text-emerald-400 font-medium">✓ Sẵn sàng phỏng vấn</span>
+                {/* Document file info */}
+                <div className="mt-4 flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 text-xs">
+                  <div className="flex items-center gap-2 text-muted">
+                    <FileCheck size={16} className="text-go" />
+                    <span className="font-mono text-fg">CV_Nguyen_Dung.pdf</span>
                   </div>
+                  <span className="font-mono text-[11px] text-dim">
+                    PDF · {profile.cvSizeKb} KB
+                  </span>
                 </div>
               </div>
 
               {/* Nhóm nút hành động chính */}
-              <div className="mt-8 space-y-3">
+              <div className="mt-7 space-y-3">
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   <button
                     id="btn-view-cv"
+                    type="button"
                     onClick={() => setShowModal(true)}
                     className="btn btn-primary justify-center !h-12 !text-[14px]"
                   >
@@ -90,7 +124,7 @@ export default function ResumeSection() {
                     download="CV_Nguyen_Dung.pdf"
                     className="btn btn-sky justify-center !h-12 !text-[14px]"
                   >
-                    <Download size={16} /> Tải CV (PDF)
+                    <Download size={16} /> Tải CV ({profile.cvSizeKb} KB)
                   </a>
                 </div>
 
@@ -98,15 +132,15 @@ export default function ResumeSection() {
                   href={profile.cv}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-1.5 py-1 text-center text-xs text-dim hover:text-sky-soft transition-colors"
+                  className="flex items-center justify-center gap-1.5 py-1 text-center text-xs text-dim transition-colors hover:text-sky-soft"
                 >
-                  Mở trực tiếp trên tab mới <ArrowUpRight size={13} />
+                  Mở file PDF trên tab mới <ArrowUpRight size={13} />
                 </a>
               </div>
             </Spotlight>
           </Reveal>
 
-          {/* Cột phải: Tổng quan năng lực & Kỹ năng (span 7) */}
+          {/* Cột phải: Tổng quan năng lực cốt lõi (span 7) */}
           <Reveal delay={0.08} className="lg:col-span-7">
             <Spotlight className="flex h-full flex-col justify-between p-6 sm:p-8">
               <div>
@@ -114,30 +148,13 @@ export default function ResumeSection() {
                   <Briefcase size={13} /> Core Competencies
                 </span>
                 <h4 className="mt-2 text-xl font-bold tracking-tight text-white">
-                  Năng lực cốt lõi & Thế mạnh
+                  Năng lực kỹ thuật đã kiểm chứng qua dự án
                 </h4>
 
                 <div className="mt-5 space-y-3">
-                  {[
-                    {
-                      title: 'Mobile Architecture (Flutter & Dart)',
-                      desc: 'Xây dựng UI responsive theo Figma, xử lý luồng State Management chặt chẽ với BLoC/GetX, tối ưu bộ nhớ và giữ FPS ổn định.',
-                    },
-                    {
-                      title: 'Backend Integration (Java Spring Boot & REST)',
-                      desc: 'Thiết kế REST API chuẩn RESTful, tương tác cơ sở dữ liệu qua JPA/Hibernate, bảo mật JWT và xử lý ngoại lệ bài bản.',
-                    },
-                    {
-                      title: 'Real-time & Location Services',
-                      desc: 'Tích hợp bản đồ OpenStreetMap (flutter_map), WebSocket / FCM nhận thông báo sự cố tức thời, định vị GPS tiết kiệm pin.',
-                    },
-                    {
-                      title: 'Tư duy sản phẩm & Clean Code',
-                      desc: 'Áp dụng nguyên lý SOLID, phân tách UI - Domain - Data rõ ràng, dễ viết Unit Test và dễ dàng chuyển giao bảo trì.',
-                    },
-                  ].map((item, idx) => (
+                  {competencies.map((item) => (
                     <div
-                      key={idx}
+                      key={item.title}
                       className="flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.015] p-3.5"
                     >
                       <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-go" />
@@ -150,119 +167,115 @@ export default function ResumeSection() {
                 </div>
               </div>
 
-              {/* Skills summary tags */}
-              <div className="mt-6 border-t border-white/[0.06] pt-5">
-                <p className="mb-2.5 font-mono text-xs uppercase tracking-wider text-dim">
-                  Từ vựng công nghệ chính
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    'Flutter',
-                    'Dart',
-                    'Java',
-                    'Spring Boot',
-                    'BLoC',
-                    'GetX',
-                    'Clean Architecture',
-                    'REST API',
-                    'OpenStreetMap',
-                    'Firebase FCM',
-                    'Git',
-                    'Figma',
-                  ].map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-slate-300"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.06] pt-4 text-xs text-muted">
+                <span>Ngôn ngữ làm việc: Tiếng Việt (Bản ngữ) · Tiếng Anh (Đọc hiểu tài liệu kỹ thuật)</span>
+                <span className="font-mono text-emerald-400">✓ Sẵn sàng phỏng vấn</span>
               </div>
             </Spotlight>
           </Reveal>
         </div>
+
+        {/* Bảng phân nhóm Kỹ năng & Công cụ (Gộp từ Skills section để tránh trùng lặp) */}
+        <div id="skills" className="mt-8 overflow-hidden rounded-2xl border border-white/[0.07]">
+          {skills.map((g, i) => (
+            <Reveal key={g.group} delay={i * 0.04} y={10}>
+              <div
+                className={`group grid gap-3 px-5 py-4 transition-colors hover:bg-white/[0.02] sm:grid-cols-[230px_1fr] sm:items-center sm:px-6 ${
+                  i ? 'border-t border-white/[0.06]' : ''
+                }`}
+              >
+                <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-dim transition-colors group-hover:text-sky-soft">
+                  {g.group}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {g.items.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-[13px] text-fg/90 transition-colors hover:border-white/20 hover:text-white"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
 
-      {/* Modal xem trước CV */}
-      <AnimatePresence>
+      {/* Native <dialog> Modal xem trước CV */}
+      <ModalDialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        titleId="cv-modal-title"
+        className="h-[90vh] w-[95vw] max-w-4xl"
+      >
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-
-            {/* Modal Content */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 16 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 flex h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0c1018] shadow-2xl"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3.5 bg-[#0a0d14]">
-                <div className="flex items-center gap-2">
-                  <FileText size={16} className="text-sky-soft" />
-                  <span className="font-medium text-sm text-white">Xem trước CV: {profile.name}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={profile.cv}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
-                    title="Mở toàn màn hình ở tab mới"
-                  >
-                    <Maximize2 size={14} />
-                  </a>
-                  <a
-                    href={profile.cv}
-                    download="CV_Nguyen_Dung.pdf"
-                    className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
-                    title="Tải về file PDF"
-                  >
-                    <Download size={14} />
-                  </a>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
-                    title="Đóng"
-                  >
-                    <X size={15} />
-                  </button>
-                </div>
+          <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0c1018] shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0a0d14] px-5 py-3.5">
+              <div className="flex items-center gap-2">
+                <FileText size={16} className="text-sky-soft" />
+                <h2 id="cv-modal-title" className="text-sm font-medium text-white">
+                  Xem trước CV: {profile.name} ({profile.cvSizeKb} KB)
+                </h2>
               </div>
-
-              {/* PDF Viewer Body */}
-              <div className="flex-1 bg-[#1a1f2c]">
-                <iframe
-                  src={profile.cv}
-                  title="CV Nguyen Dung"
-                  className="h-full w-full border-0"
-                />
-              </div>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between border-t border-white/[0.08] px-5 py-3 bg-[#0a0d14] text-xs text-muted">
-                <span>Nếu trình duyệt của bạn không hỗ trợ xem trực tiếp, hãy bấm tải về.</span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={profile.cv}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
+                  title="Mở toàn màn hình ở tab mới"
+                  aria-label="Mở toàn màn hình ở tab mới"
+                >
+                  <Maximize2 size={14} />
+                </a>
                 <a
                   href={profile.cv}
                   download="CV_Nguyen_Dung.pdf"
-                  className="btn btn-sky !h-8 !px-3 text-xs"
+                  className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
+                  title="Tải về file PDF"
+                  aria-label="Tải về file PDF"
                 >
-                  <Download size={13} /> Tải bản PDF
+                  <Download size={14} />
                 </a>
+                <button
+                  type="button"
+                  autofocus
+                  onClick={() => setShowModal(false)}
+                  className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-white/20 hover:text-white"
+                  title="Đóng (Esc)"
+                  aria-label="Đóng cửa sổ xem CV"
+                >
+                  <X size={15} />
+                </button>
               </div>
-            </motion.div>
+            </div>
+
+            {/* PDF Viewer Body */}
+            <div className="flex-1 bg-[#1a1f2c]">
+              <iframe
+                src={profile.cv}
+                title="CV Nguyen Anh Dung"
+                className="h-full w-full border-0"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between border-t border-white/[0.08] bg-[#0a0d14] px-5 py-3 text-xs text-muted">
+              <span>Nhấn phím Esc hoặc bấm ra ngoài vùng tối để đóng.</span>
+              <a
+                href={profile.cv}
+                download="CV_Nguyen_Dung.pdf"
+                className="btn btn-sky !h-8 !px-3 text-xs"
+              >
+                <Download size={13} /> Tải bản PDF ({profile.cvSizeKb} KB)
+              </a>
+            </div>
           </div>
         )}
-      </AnimatePresence>
+      </ModalDialog>
     </section>
   )
 }
