@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowDown, ArrowUpRight } from 'lucide-react'
-import { githubStats, librarySystem, profile, trafficHub } from '../data'
+import { githubStats, profile, trafficHub } from '../data'
 import { StatusPill } from './ui'
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -13,7 +13,7 @@ const item = (i) => ({
 const metrics = [
   [githubStats.contributions, 'GitHub contributions trong 12 tháng'],
   [trafficHub.commits, 'Commits · TrafficHub (Flutter, Team 5)'],
-  [`${librarySystem.tablesCount} · ${librarySystem.controllersCount}`, 'Bảng MySQL · REST Controller'],
+  [`${trafficHub.dartFiles} · ${trafficHub.moduleCount}`, 'File Dart · Modules (TrafficHub)'],
   [profile.education.gpa.split(' ')[0], 'GPA thang 4.0 · UTT'],
 ]
 
@@ -34,9 +34,10 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p {...item(2)} className="mt-8 max-w-2xl text-[17px] leading-relaxed text-muted">
-          {profile.name} — sinh viên năm cuối CNTT tại {profile.education.school}. Phát triển ứng dụng
-          Flutter (GetX, Riverpod), xây dựng REST API Spring Boot và kiểm thử E2E bằng Cypress. Đạt
-          Giải Khuyến khích Innovation Challenge 4.0 (2026) với TrafficHub.
+          {profile.name} — sinh viên năm cuối CNTT (chuyên ngành Phát triển Ứng dụng Di động) tại{' '}
+          {profile.education.school}. Tập trung xây dựng ứng dụng đa nền tảng với Flutter (GetX, Riverpod),
+          tích hợp RESTful API, WebSocket thời gian thực và AI. Đạt Giải Khuyến khích Innovation Challenge
+          4.0 (2026) với dự án TrafficHub.
         </motion.p>
 
         <motion.div {...item(3)} className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">

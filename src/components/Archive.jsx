@@ -3,7 +3,7 @@ import { ArrowUpRight, Check, X } from 'lucide-react'
 import { featuredRepositories, githubStats, profile } from '../data'
 import { GithubIcon, ModalDialog } from './ui'
 
-const archive = featuredRepositories.filter((r) => r.id === 'music-app' || r.id === 'valorant-banpick')
+const archive = featuredRepositories.filter((r) => r.id !== 'traffic-posts')
 
 export default function Archive() {
   const [repo, setRepo] = useState(null) // keep data while the dialog animates out
@@ -18,8 +18,8 @@ export default function Archive() {
     <article>
       <div className="flex items-end justify-between gap-4">
         <div>
-          <p className="font-mono text-xs text-dim">03 — Dự án khác</p>
-          <h3 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg">Lưu trữ</h3>
+          <p className="font-mono text-xs text-dim">02 — Dự án cá nhân khác</p>
+          <h3 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-fg">Dự án cá nhân khác</h3>
         </div>
         <a href={profile.github} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1 text-sm">
           Xem toàn bộ {githubStats.publicRepos} repo <ArrowUpRight size={14} />

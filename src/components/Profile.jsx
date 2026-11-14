@@ -149,7 +149,7 @@ export default function Profile() {
                     { k: 'Chuyên ngành', v: profile.education.degree },
                     { k: 'GPA', v: `${profile.education.gpa} · ${profile.education.period}` },
                     { k: 'Giải thưởng', v: `${profile.award.title}. Dự án: TrafficHub.` },
-                    { k: 'Quy trình', v: 'Figma → API Contract → Clean Code → Cypress E2E (Git, ClickUp / Sprint)' },
+                    { k: 'Quy trình', v: 'Figma UI/UX → Modular Architecture (GetX / Riverpod) → Tích hợp REST API & WebSocket (Git, ClickUp)' },
                   ]}
                 />
               </div>

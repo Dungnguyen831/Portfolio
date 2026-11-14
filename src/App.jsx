@@ -1,7 +1,6 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import CaseStudy from './components/CaseStudy'
-import Library from './components/Library'
 import Archive from './components/Archive'
 import Profile from './components/Profile'
 import Contact from './components/Contact'
@@ -19,11 +18,10 @@ export default function App() {
             <SectionHeader
               index="01 — Dự án chọn lọc"
               title="Sản phẩm thực tế, chạy được ngay trên trình duyệt."
-              desc="Hai case study chính (Flutter mobile và Spring Boot backend) cùng các dự án phụ. Mọi dự án đều có mã nguồn công khai để kiểm chứng."
+              desc="Case study trọng tâm về Flutter Mobile (TrafficHub) với bản demo tương tác trực tiếp cùng các dự án cá nhân khác. Mọi dự án đều có mã nguồn công khai để kiểm chứng."
             />
             <div className="space-y-28">
               <CaseStudy />
-              <Library />
               <Archive />
             </div>
           </div>

@@ -23,7 +23,7 @@ export default function Contact() {
       <div className="mx-auto max-w-6xl">
         <SectionHeader
           index="04 — Liên hệ"
-          title="Đang tìm cơ hội Thực tập / Fresher Flutter hoặc Full-stack."
+          title="Đang tìm cơ hội Thực tập / Fresher Mobile App (Flutter)."
           desc={`Sẵn sàng phỏng vấn tại ${profile.location}. Email là cách nhanh nhất để liên hệ.`}
         />
 
