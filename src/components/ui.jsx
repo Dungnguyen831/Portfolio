@@ -202,7 +202,7 @@ export const useMediaQuery = (query) => {
 export const StatusPill = ({ className = '' }) => (
   <span className={`inline-flex items-center gap-2 text-sm text-muted ${className}`}>
     <span className="h-2 w-2 rounded-full bg-go" aria-hidden="true" />
-    Đang tìm cơ hội Thực tập / Fresher · Hà Nội
+    Đang tìm cơ hội Thực tập / Intern · Hà Nội
   </span>
 )
 

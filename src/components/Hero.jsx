@@ -30,7 +30,7 @@ export default function Hero() {
           className="mt-8 max-w-4xl text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-6xl lg:text-[4.25rem]"
         >
           <span className="text-fg">Mobile App Developer</span>{' '}
-          <span className="text-dim">định hướng chuyên sâu về Flutter.</span>
+          <span className="text-dim">Flutter.</span>
         </motion.h1>
 
         <motion.p {...item(2)} className="mt-8 max-w-2xl text-[17px] leading-relaxed text-muted">

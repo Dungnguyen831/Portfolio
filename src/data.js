@@ -24,7 +24,7 @@ export const profile = {
     school: 'Trường Đại học Công nghệ Giao thông Vận tải (UTT)',
     englishSchool: 'University of Transport Technology',
     degree: 'Cử nhân Công nghệ Thông tin (Chuyên ngành Phát triển Ứng dụng Di động)',
-    gpa: '3.12 / 4.0',
+    gpa: '3.2 / 4.0',
     period: '2023 – 2027 (Sinh viên năm cuối)',
     location: 'Hà Nội, Việt Nam',
   },
