@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    # Tự động đồng bộ số liệu GitHub lúc 03:00 sáng (giờ VN) mỗi ngày
+    - cron: '0 20 * * *'
   workflow_dispatch:
 
 permissions:
@@ -33,7 +36,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build (with live GitHub metrics sync)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run build
 
       - name: Setup Pages
