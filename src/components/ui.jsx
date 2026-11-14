@@ -1,61 +1,134 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const EASE = [0.16, 1, 0.3, 1]
 
-export const Reveal = ({ children, delay = 0, y = 16, className = '', as = 'div' }) => {
-  const M = motion[as]
-  return (
-    <M
-      className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.65, delay, ease: EASE }}
-    >
-      {children}
-    </M>
-  )
-}
-
-export const Eyebrow = ({ children, color = 'text-sky-soft' }) => (
-  <span className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] ${color}`}>
-    <span className="h-px w-5 bg-current opacity-60" />
+export const Reveal = ({ children, delay = 0, y = 12, className = '' }) => (
+  <motion.div
+    className={className}
+    initial={{ opacity: 0, y }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: '-40px' }}
+    transition={{ duration: 0.6, delay, ease: EASE }}
+  >
     {children}
-  </span>
+  </motion.div>
 )
 
-export const SectionHeader = ({ eyebrow, title, desc, right }) => (
-  <Reveal className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+export const SectionHeader = ({ index, title, desc, right }) => (
+  <Reveal className="mb-12 flex flex-col justify-between gap-6 border-t border-line pt-6 md:flex-row md:items-end">
     <div className="max-w-2xl">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">{title}</h2>
+      <p className="font-mono text-xs text-dim">{index}</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{title}</h2>
       {desc && <p className="mt-3 text-[15px] leading-relaxed text-muted">{desc}</p>}
     </div>
     {right}
   </Reveal>
 )
 
-/** Card with a cursor-following hairline highlight. */
-export const Spotlight = ({ as: Tag = 'div', className = '', children, ...rest }) => {
-  const onMove = useCallback((e) => {
-    const r = e.currentTarget.getBoundingClientRect()
-    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
-    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
-  }, [])
+/** Hairline definition list: [{ k, v }] */
+export const Rows = ({ items, labelWidth = '160px', mono = false }) => (
+  <dl className="divide-y divide-line border-y border-line">
+    {items.map(({ k, v }) => (
+      <div
+        key={k}
+        className="grid gap-1 py-3 sm:items-baseline sm:gap-6 sm:[grid-template-columns:var(--label-w)_1fr]"
+        style={{ '--label-w': labelWidth }}
+      >
+        <dt className="text-xs text-dim">{k}</dt>
+        <dd className={`text-[14px] leading-relaxed text-fg ${mono ? 'font-mono text-[13px]' : ''}`}>{v}</dd>
+      </div>
+    ))}
+  </dl>
+)
+
+/**
+ * Accessible tabs (WAI-ARIA tabs, selection follows focus, roving tabindex).
+ * tabs: [{ id, label, content }]
+ */
+export function Tabs({ label, tabs }) {
+  const uid = useId()
+  const [active, setActive] = useState(tabs[0].id)
+  const refs = useRef({})
+
+  const select = (id, focus = false) => {
+    setActive(id)
+    const el = refs.current[id]
+    if (el) {
+      if (focus) el.focus()
+      el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    }
+  }
+
+  const onKeyDown = (e, i) => {
+    let next
+    if (e.key === 'ArrowRight') next = (i + 1) % tabs.length
+    else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length
+    else if (e.key === 'Home') next = 0
+    else if (e.key === 'End') next = tabs.length - 1
+    else return
+    e.preventDefault()
+    select(tabs[next].id, true)
+  }
+
   return (
-    <Tag onMouseMove={onMove} className={`card spotlight ${className}`} {...rest}>
-      {children}
-    </Tag>
+    <div>
+      <div role="tablist" aria-label={label} className="tablist">
+        {tabs.map((t, i) => {
+          const on = t.id === active
+          return (
+            <button
+              key={t.id}
+              ref={(el) => (refs.current[t.id] = el)}
+              id={`${uid}-tab-${t.id}`}
+              type="button"
+              role="tab"
+              className="tab"
+              aria-selected={on}
+              tabIndex={on ? 0 : -1}
+              onClick={() => select(t.id)}
+              onKeyDown={(e) => onKeyDown(e, i)}
+            >
+              {t.label}
+            </button>
+          )
+        })}
+      </div>
+      {tabs.map((t) => (
+        <div
+          key={t.id}
+          role="tabpanel"
+          aria-labelledby={`${uid}-tab-${t.id}`}
+          hidden={t.id !== active}
+          tabIndex={t.id === active ? 0 : undefined}
+        >
+          <div className="pt-6">{t.content}</div>
+        </div>
+      ))}
+    </div>
   )
 }
 
+/** Closes a modal <dialog> after its exit transition has finished. */
+async function closeWithAnimation(dialog) {
+  if (!dialog.open || dialog.hasAttribute('data-closing')) return
+  dialog.setAttribute('data-closing', '')
+  const animations = dialog.getAnimations({ subtree: true })
+  if (animations.length > 0) {
+    await Promise.race([
+      Promise.allSettled(animations.map((a) => a.finished)),
+      new Promise((r) => setTimeout(r, 800)),
+    ])
+  }
+  dialog.removeAttribute('data-closing')
+  dialog.close()
+}
+
 /**
- * Native <dialog> modal wrapper following modern-web-guidance:
- * - Opens with dialog.showModal()
- * - Uses declarative closedby="any" for Esc + light-dismiss
- * - Implements coordinate-based click-outside fallback when closedBy is unsupported
- * - Does not set role="dialog", aria-modal, or mutate body/html overflow
+ * Native <dialog> modal wrapper:
+ * - opens with showModal(), closes with an exit animation (see index.css)
+ * - closedby="any" gives Esc + light-dismiss; Esc / light-dismiss are routed through the same animated close
+ * - coordinate-based backdrop click fallback when closedBy is unsupported
  */
 export const ModalDialog = ({ open, onClose, titleId, className = '', children }) => {
   const dialogRef = useRef(null)
@@ -63,45 +136,41 @@ export const ModalDialog = ({ open, onClose, titleId, className = '', children }
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-
-    if (open && !dialog.open) {
-      dialog.showModal()
-    } else if (!open && dialog.open) {
-      dialog.close()
-    }
+    if (open && !dialog.open) dialog.showModal()
+    else if (!open && dialog.open) closeWithAnimation(dialog)
   }, [open])
 
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
 
-    const handleClose = () => {
-      dialog.returnValue = ''
-      onClose?.()
+    const handleClose = () => onClose?.()
+    const handleCancel = (e) => {
+      e.preventDefault()
+      closeWithAnimation(dialog)
     }
     dialog.addEventListener('close', handleClose)
+    dialog.addEventListener('cancel', handleCancel)
 
     let handleBackdropClick
     if (!('closedBy' in HTMLDialogElement.prototype)) {
       handleBackdropClick = (event) => {
         if (event.target !== dialog) return
-        const rect = dialog.getBoundingClientRect()
-        const isDialogContent =
-          rect.top <= event.clientY &&
-          event.clientY <= rect.top + rect.height &&
-          rect.left <= event.clientX &&
-          event.clientX <= rect.left + rect.width
-        if (isDialogContent) return
-        dialog.close()
+        const r = dialog.getBoundingClientRect()
+        const inside =
+          r.top <= event.clientY &&
+          event.clientY <= r.top + r.height &&
+          r.left <= event.clientX &&
+          event.clientX <= r.left + r.width
+        if (!inside) closeWithAnimation(dialog)
       }
       dialog.addEventListener('click', handleBackdropClick)
     }
 
     return () => {
       dialog.removeEventListener('close', handleClose)
-      if (handleBackdropClick) {
-        dialog.removeEventListener('click', handleBackdropClick)
-      }
+      dialog.removeEventListener('cancel', handleCancel)
+      if (handleBackdropClick) dialog.removeEventListener('click', handleBackdropClick)
     }
   }, [onClose])
 
@@ -131,12 +200,9 @@ export const useMediaQuery = (query) => {
 }
 
 export const StatusPill = ({ className = '' }) => (
-  <span className={`status-pill inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium text-emerald-300 ${className}`}>
-    <span className="relative flex h-2 w-2">
-      <span className="beacon absolute inline-flex h-full w-full rounded-full bg-go" />
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-go shadow-[0_0_8px_#22c55e]" />
-    </span>
-    Sẵn sàng nhận việc <span className="text-emerald-300/60">(Open to Work)</span>
+  <span className={`inline-flex items-center gap-2 text-sm text-muted ${className}`}>
+    <span className="h-2 w-2 rounded-full bg-go" aria-hidden="true" />
+    Đang tìm cơ hội Thực tập / Fresher · Hà Nội
   </span>
 )
 
